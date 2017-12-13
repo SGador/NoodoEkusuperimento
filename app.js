@@ -54,10 +54,6 @@ app.use('/service',express.static(path.join(__dirname,'app_client','services')))
 
 require('./routes')(app);
 
-
-
-
-
 //sdsdsfsdfsd
 // development only
 if ('development' == app.get('env')) {
