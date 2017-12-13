@@ -9,7 +9,7 @@ app.use(bodyParser.json({
   verify: verify
 }));
 
-var port = process.env.PORT || 5000;
+var port = process.env.PORT || 3000;
 app.set('port', port);
 
 require('./app')(app);
