@@ -100,15 +100,7 @@ module.exports = function(app) {
     callback(null, conversationResponse);
   }
 };
-var express = require('express');
-var bodyParser = require('body-parser');
-var verify = require('./security');
-var app = express();
 
-app.use(bodyParser.json({
-  verify: verify
-}));
-
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
-});
+//http.createServer(app).listen(app.get('port'), function(){
+//  console.log('Express server listening on port ' + app.get('port'));
+//});
