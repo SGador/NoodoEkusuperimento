@@ -1,29 +1,22 @@
 
-/**
- * Module dependencies.
- */
-
 var express = require('express')
   , http = require('http')
   , path = require('path');
 
 var app = express();
 var mongoose = require('mongoose');
-var config = require('./config');
 var methodOverride = require('method-override');
 var bodyParser = require('body-parser');
 var expressSession = require('express-session');
 var cookieParser = require('cookie-parser');
-//db
-mongoose.connect(config.getDbConnectionString());
-
-//auth
-var hash = require('bcrypt-nodejs');
 var passport = require('passport');
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: false
-}));
+//[SH] Bring in the data model
+require('./models/db');
+console.log('models loaded');
+// [SH] Bring in the Passport config after model is defined
+require('./config/passport');
+console.log('passport config loaded');
+//[SH] Initialise Passport before using the route middleware
 app.use(passport.initialize());
 
 
@@ -41,11 +34,7 @@ app.use('/pic', express.static(path.join(__dirname,'app_client','images')));
 app.use('/service',express.static(path.join(__dirname,'app_client','services')));
 
 require('./routes')(app);
-<<<<<<< HEAD
-
-=======
 console.log('routes loaded');
->>>>>>> upstream/master
 //sdsdsfsdfsd
 // development only
 if ('development' == app.get('env')) {
