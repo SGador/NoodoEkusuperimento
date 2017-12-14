@@ -20,31 +20,19 @@ mongoose.connect(config.getDbConnectionString());
 //auth
 var hash = require('bcrypt-nodejs');
 var passport = require('passport');
-var localStrategy = require('passport-local' ).Strategy;
-var User = require('./models/userModel.js');
-app.use(require('express-session')({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: false
 }));
 app.use(passport.initialize());
-app.use(passport.session());
-app.use(express.static(path.join(__dirname, 'public')));
 
-// configure passport
-passport.use(new localStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
 
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/app_client/views');
-//app.set('view engine', 'ejs');
+app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
-app.use(bodyParser.urlencoded({ extended: true })); // parse application/x-www-form-urlencoded
-app.use(methodOverride('X-HTTP-Method-Override')); // override with the X-HTTP-Method-Override header in the request. simulate DELETE/PUT
-//app.use(app.router);
+app.use(bodyParser.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
 app.use(express.static(path.join(__dirname, 'app_client')));
 app.use(express.static(path.join(__dirname, 'app_client','app')));
 app.use(express.static(path.join(__dirname, 'node_modules')));
@@ -53,24 +41,50 @@ app.use('/pic', express.static(path.join(__dirname,'app_client','images')));
 app.use('/service',express.static(path.join(__dirname,'app_client','services')));
 
 require('./routes')(app);
+<<<<<<< HEAD
 
+=======
+console.log('routes loaded');
+>>>>>>> upstream/master
 //sdsdsfsdfsd
 // development only
 if ('development' == app.get('env')) {
 }
-//errorbois
+//error handlers
+//catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
-app.use(function(err, req, res) {
-  res.status(err.status || 500);
-  res.end(JSON.stringify({
-    message: err.message,
-    error: {}
-  }));
+//[SH] Catch unauthorised errors
+app.use(function (err, req, res, next) {
+if (err.name === 'UnauthorizedError') {
+ res.status(401);
+ res.json({"message" : err.name + ": " + err.message});
+}
+});
+//development error handler
+//will print stacktrace
+if (app.get('env') === 'development') {
+ app.use(function(err, req, res, next) {
+     res.status(err.status || 500);
+     res.render('error', {
+         message: err.message,
+         error: err
+     });
+ });
+}
+
+//production error handler
+//no stacktraces leaked to user
+app.use(function(err, req, res, next) {
+ res.status(err.status || 500);
+ res.render('error', {
+     message: err.message,
+     error: {}
+ });
 });
 
 //botkit
